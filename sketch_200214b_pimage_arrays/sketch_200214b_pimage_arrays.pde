@@ -2,9 +2,9 @@ import org.openkinect.processing.*;
 
 Kinect2 kinect2;
 
-float minThresh = 300;
-float maxThresh = 1000;
-PImage img;
+float minThresh = 500;
+float maxThresh = 1700;
+PImage img, forest, desert;
 
 ArrayList<PImage> images = new ArrayList<PImage>();
 
@@ -14,6 +14,8 @@ void setup() {
   kinect2.initDepth();
   kinect2.initDevice();
   img = createImage(kinect2.depthWidth, kinect2.depthHeight, RGB);
+  forest = loadImage("forest.jpg");
+  desert = loadImage("desert.jpg");
 }
 
 void draw() {
@@ -28,6 +30,8 @@ void draw() {
   
 
   int[] depth = kinect2.getRawDepth();
+  
+  //forest.mask(desert);
 
   for (int x = 0; x < kinect2.depthWidth; x++) {
     for (int y = 0; y < kinect2.depthHeight; y++) {
@@ -35,7 +39,9 @@ void draw() {
       int d = depth[offset];
       
       if (d > minThresh && d < maxThresh) {
-        img.pixels[offset] = color(50, 200, 50);
+        img.pixels[offset] = color(200);
+        //forest.mask(desert);
+        //forest.pixels[offset].mask(desert.pixels[offset]);
       } else {
         img.pixels[offset] = color(0);
       }
@@ -54,7 +60,12 @@ void draw() {
   }
   
   PImage part = images.get(0);
-  image(part, 0, 0);
+  //image(part, 0, 0);
+  
+  image(forest, 0, 0);
+  desert.mask(part);
+  image(desert, 0, 0);
+  
 }
 
 class Image {
